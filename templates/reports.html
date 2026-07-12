@@ -1,0 +1,61 @@
+{% extends 'base.html' %} {% block content %}
+<div class="page-header">
+  <div>
+    <h1>Reports & Analytics</h1>
+    <p>
+      Fuel efficiency, costs, utilization, and estimated profit in one place.
+    </p>
+  </div>
+</div>
+<div class="dashboard-grid">
+  <div class="summary-card">
+    <h3>Total Fuel Logged</h3>
+    <p>{{ fuel_total_liters }}</p>
+    <small>Liters recorded</small>
+  </div>
+  <div class="summary-card">
+    <h3>Operational Cost</h3>
+    <p>{{ operational_cost }}</p>
+    <small>Fuel + maintenance + expenses</small>
+  </div>
+  <div class="summary-card">
+    <h3>Fuel Efficiency</h3>
+    <p>{{ fuel_efficiency }}</p>
+    <small>Distance/Fuel for completed trips</small>
+  </div>
+  <div class="summary-card">
+    <h3>Fleet Utilization</h3>
+    <p>{{ utilization }}%</p>
+    <small>Completed trips vs active fleet</small>
+  </div>
+  <div class="summary-card">
+    <h3>Estimated Revenue</h3>
+    <p>{{ estimated_revenue }}</p>
+    <small>Based on completed trips</small>
+  </div>
+  <div class="summary-card">
+    <h3>Estimated Profit</h3>
+    <p>{{ estimated_profit }}</p>
+    <small>Revenue minus operational cost</small>
+  </div>
+</div>
+<div class="card">
+  <h2>Vehicle Profit Estimate</h2>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Registration</th>
+      <th>Status</th>
+      <th>ROI</th>
+    </tr>
+    {% for vehicle in vehicles %}
+    <tr>
+      <td>{{ vehicle.id }}</td>
+      <td>{{ vehicle.registration_number }}</td>
+      <td>{{ vehicle.status }}</td>
+      <td>{{ vehicle_roi[vehicle.id] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

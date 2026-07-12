@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="card"><h2>Vehicle Documents</h2>
+    <p>Inspect and track document notes for {{ vehicle.registration_number }}.</p>
+    <form method="post">
+      <input name="title" placeholder="Document title" required>
+      <textarea name="note" placeholder="Notes"></textarea>
+      <button>Save Note</button>
+    </form>
+  </div>
+  <div class="card"><h2>Saved Notes</h2>
+    <table><tr><th>Title</th><th>Note</th><th>Created</th></tr>{% for document in documents %}
+      <tr><td>{{ document.title }}</td><td>{{ document.note }}</td><td>{{ document.created_at }}</td></tr>{% endfor %}</table>
+  </div>
+{% endblock %}

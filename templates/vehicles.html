@@ -1,0 +1,126 @@
+{% extends 'base.html' %} {% block content %}
+<div class="page-header">
+  <div>
+    <h1>Vehicle Registry</h1>
+    <p>
+      Track registered vehicles, filter by type/status/region, and keep the fleet
+      ready for dispatch.
+    </p>
+  </div>
+  <div class="section-actions">
+    <a class="button" href="#add">+ Add Vehicle</a>
+  </div>
+</div>
+<div class="card registry-controls">
+  <form method="get" class="filter-grid">
+    <label>
+      Type
+      <select name="vehicle_type">
+        <option value="">All</option>
+        <option value="Van" {% if request.args.get('vehicle_type') == 'Van' %}selected{% endif %}>Van</option>
+        <option value="Truck" {% if request.args.get('vehicle_type') == 'Truck' %}selected{% endif %}>Truck</option>
+        <option value="Bus" {% if request.args.get('vehicle_type') == 'Bus' %}selected{% endif %}>Bus</option>
+        <option value="Mini" {% if request.args.get('vehicle_type') == 'Mini' %}selected{% endif %}>Mini</option>
+      </select>
+    </label>
+    <label>
+      Status
+      <select name="status">
+        <option value="">All</option>
+        <option value="Available" {% if request.args.get('status') == 'Available' %}selected{% endif %}>Available</option>
+        <option value="On Trip" {% if request.args.get('status') == 'On Trip' %}selected{% endif %}>On Trip</option>
+        <option value="In Shop" {% if request.args.get('status') == 'In Shop' %}selected{% endif %}>In Shop</option>
+        <option value="Retired" {% if request.args.get('status') == 'Retired' %}selected{% endif %}>Retired</option>
+      </select>
+    </label>
+    <label>
+      Region
+      <input name="region" placeholder="All" value="{{ request.args.get('region','') }}" />
+    </label>
+    <label>
+      Search
+      <input name="search" placeholder="Search registration or model" value="{{ request.args.get('search','') }}" />
+    </label>
+    <button type="submit" class="button">Apply</button>
+  </form>
+</div>
+<div class="card" id="add">
+  <h2>Add Vehicle</h2>
+  <form method="post" class="form-grid vehicle-form">
+    <label>
+      Registration Number
+      <input name="registration_number" placeholder="Enter registration" required />
+    </label>
+    <label>
+      Vehicle Name / Model
+      <input name="name" placeholder="Enter name or model" required />
+    </label>
+    <label>
+      Type
+      <input name="vehicle_type" placeholder="Van, Truck, Bus, Mini" required />
+    </label>
+    <label>
+      Capacity
+      <input name="max_load_capacity" type="number" step="0.01" placeholder="Enter max load" required />
+    </label>
+    <label>
+      Odometer
+      <input name="odometer" type="number" step="0.01" placeholder="Enter odometer" required />
+    </label>
+    <label>
+      Acquisition Cost
+      <input name="acquisition_cost" type="number" step="0.01" placeholder="Enter acquisition cost" required />
+    </label>
+    <label>
+      Status
+      <select name="status">
+        <option>Available</option>
+        <option>On Trip</option>
+        <option>In Shop</option>
+        <option>Retired</option>
+      </select>
+    </label>
+    <label>
+      Region
+      <input name="region" placeholder="Region" value="North" />
+    </label>
+    <button class="button">Save Vehicle</button>
+  </form>
+</div>
+<div class="card vehicle-table-card">
+  <div class="table-header">
+    <h2>Registered Vehicles</h2>
+    <span class="small-note">Reg. No must be unique · Retired/In Shop vehicles are hidden from Trip Dispatcher</span>
+  </div>
+  <table class="vehicle-table">
+    <tr>
+      <th>Reg. No</th>
+      <th>Name / Model</th>
+      <th>Type</th>
+      <th>Capacity</th>
+      <th>Odometer</th>
+      <th>Acq. Cost</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.registration_number }}</td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.vehicle_type }}</td>
+      <td>{{ item.max_load_capacity }} kg</td>
+      <td>{{ item.odometer }}</td>
+      <td>{{ item.acquisition_cost }}</td>
+      <td><span class="status-pill status-{{ item.status|replace(' ', '-') }}">{{ item.status }}</span></td>
+      <td>
+        <a class="action-link" href="/vehicles/{{ item.id }}/edit">Edit</a>
+        <a class="action-link" href="/vehicles/{{ item.id }}/documents">Docs</a>
+        <form method="post" action="/vehicles/{{ item.id }}/delete" class="inline-form">
+          <button class="button secondary">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

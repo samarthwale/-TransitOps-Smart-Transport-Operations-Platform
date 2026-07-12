@@ -1,0 +1,143 @@
+{% extends 'base.html' %} {% block content %}
+<div class="page-header">
+  <div>
+    <h1>Trip Dispatcher</h1>
+    <p>
+      Dispatch routes, assign drivers, and operate with capacity safeguards.
+    </p>
+  </div>
+</div>
+<div class="dispatch-grid">
+  <div class="card dispatch-panel">
+    <div class="panel-header">
+      <div>
+        <h2>Create Trip</h2>
+        <p class="small-note">
+          Only available vehicles and drivers can be assigned.
+        </p>
+      </div>
+      <div class="lifecycle">
+        <span class="lifecycle-step active-step">Draft</span>
+        <span class="lifecycle-step active-step">Dispatched</span>
+        <span class="lifecycle-step">Completed</span>
+        <span class="lifecycle-step">Cancelled</span>
+      </div>
+    </div>
+    <form method="post" class="form-grid trip-form">
+      <label>
+        Source
+        <input name="source" placeholder="Enter pickup location" required />
+      </label>
+      <label>
+        Destination
+        <input
+          name="destination"
+          placeholder="Enter drop-off location"
+          required
+        />
+      </label>
+      <label>
+        Vehicle
+        <select name="vehicle_id">
+          {% for vehicle in vehicles %}
+          <option value="{{ vehicle.id }}">
+            {{ vehicle.registration_number }} - {{ vehicle.name }} ({{
+            vehicle.max_load_capacity }} kg)
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Driver
+        <select name="driver_id">
+          {% for driver in drivers %}
+          <option value="{{ driver.id }}">
+            {{ driver.name }} - {{ driver.license_number }}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Cargo Weight (kg)
+        <input
+          name="cargo_weight"
+          type="number"
+          step="0.01"
+          placeholder="Enter cargo weight"
+          required
+        />
+      </label>
+      <label>
+        Planned Distance (km)
+        <input
+          name="planned_distance"
+          type="number"
+          step="0.01"
+          placeholder="Enter planned distance"
+          required
+        />
+      </label>
+      <button class="button">Dispatch Trip</button>
+    </form>
+    <div class="note-card">
+      <strong>Dispatch rules</strong>
+      <p>
+        Do not assign vehicles with capacity below cargo weight. Suspended or
+        expired drivers are blocked automatically.
+      </p>
+    </div>
+  </div>
+  <div class="card live-board-panel">
+    <div class="panel-header">
+      <div>
+        <h2>Live Board</h2>
+        <p class="small-note">Monitor current route status and assignments.</p>
+      </div>
+      <div class="board-summary">
+        <span>Dispatched: {{ status_counts['Dispatched'] }}</span>
+        <span>Completed: {{ status_counts['Completed'] }}</span>
+        <span>Cancelled: {{ status_counts['Cancelled'] }}</span>
+      </div>
+    </div>
+    <div class="live-board">
+      {% for item in items %}
+      <div class="live-card">
+        <div class="live-card-title">
+          {{ item.registration }} / {{ item.driver_name }}
+        </div>
+        <div class="live-card-route">
+          {{ item.source }} → {{ item.destination }}
+        </div>
+        <div class="live-card-meta">
+          <span class="status-pill status-{{ item.status|replace(' ', '-') }}"
+            >{{ item.status }}</span
+          >
+          <span>{{ item.cargo_weight }} kg</span>
+          <span>{{ item.planned_distance }} km</span>
+        </div>
+        <div class="live-card-actions">
+          {% if item.status == 'Dispatched' %} {% if session.get('user',
+          {}).get('role') == 'Fleet Manager' %}
+          <form
+            method="post"
+            action="{{ url_for('complete_trip', trip_id=item.id) }}"
+            class="inline-form"
+          >
+            <input type="hidden" name="final_odometer" value="0" />
+            <input type="hidden" name="fuel_consumed" value="0" />
+            <button class="button secondary">Complete Trip</button>
+          </form>
+          {% else %}
+          <button class="button secondary" disabled>In Transit</button>
+          {% endif %} {% else %}
+          <span class="muted">No active action</span>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <p class="small-note">No trips recorded yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

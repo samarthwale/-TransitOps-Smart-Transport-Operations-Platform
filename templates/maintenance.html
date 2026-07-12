@@ -1,0 +1,91 @@
+{% extends 'base.html' %} {% block content %}
+<div class="page-header">
+  <div>
+    <h1>Maintenance</h1>
+    <p>
+      Log service work, update repair status, and return vehicles back into
+      operation.
+    </p>
+  </div>
+</div>
+<div class="card">
+  <h2>Maintenance Log</h2>
+  <form method="post" class="form-grid">
+    <label>
+      Vehicle
+      <select name="vehicle_id">
+        {% for vehicle in vehicles %}
+        <option value="{{ vehicle.id }}">
+          {{ vehicle.registration_number }} - {{ vehicle.status }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Maintenance Title
+      <input name="title" placeholder="Enter maintenance title" required />
+    </label>
+    <label>
+      Description
+      <textarea
+        name="description"
+        placeholder="Enter details of the service or repair"
+      ></textarea>
+    </label>
+    <label>
+      Estimated Cost
+      <input
+        name="cost"
+        type="number"
+        step="0.01"
+        placeholder="Enter cost amount"
+        required
+      />
+    </label>
+    <label>
+      Start Date
+      <input name="start_date" type="date" required />
+      <small class="helper-text">Choose the maintenance start date.</small>
+    </label>
+    <label>
+      Expected End Date
+      <input name="end_date" type="date" />
+      <small class="helper-text"
+        >Optional: choose when the vehicle should be back in service.</small
+      >
+    </label>
+    <button>Log Maintenance</button>
+  </form>
+</div>
+<div class="card">
+  <h2>Maintenance Records</h2>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Vehicle</th>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.vehicle_id }}</td>
+      <td>{{ item.title }}</td>
+      <td>
+        <span class="status-pill status-{{ item.status|replace(' ', '-') }}"
+          >{{ item.status }}</span
+        >
+      </td>
+      <td>
+        {% if item.status == 'Open' %}
+        <form method="post" action="/maintenance/{{ item.id }}/close">
+          <button class="button-outline">Close</button>
+        </form>
+        {% else %}<span class="muted">No action</span>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

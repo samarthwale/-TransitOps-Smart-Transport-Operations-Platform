@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="card"><h2>Edit Vehicle</h2>
+    <form method="post">
+      <input name="registration_number" value="{{ vehicle.registration_number }}" required>
+      <input name="name" value="{{ vehicle.name }}" required>
+      <input name="vehicle_type" value="{{ vehicle.vehicle_type }}" required>
+      <input name="max_load_capacity" type="number" step="0.01" value="{{ vehicle.max_load_capacity }}" required>
+      <input name="odometer" type="number" step="0.01" value="{{ vehicle.odometer }}" required>
+      <input name="acquisition_cost" type="number" step="0.01" value="{{ vehicle.acquisition_cost }}" required>
+      <select name="status">
+        <option {% if vehicle.status == 'Available' %}selected{% endif %}>Available</option>
+        <option {% if vehicle.status == 'On Trip' %}selected{% endif %}>On Trip</option>
+        <option {% if vehicle.status == 'In Shop' %}selected{% endif %}>In Shop</option>
+        <option {% if vehicle.status == 'Retired' %}selected{% endif %}>Retired</option>
+      </select>
+      <input name="region" value="{{ vehicle.region }}">
+      <button>Save</button>
+    </form>
+  </div>
+{% endblock %}

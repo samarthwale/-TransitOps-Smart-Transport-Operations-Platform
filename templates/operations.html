@@ -1,0 +1,131 @@
+{% extends 'base.html' %} {% block content %}
+<div class="page-header">
+  <div>
+    <h1>Fuel & Expense Management</h1>
+    <p>Log fuel, track expenses, and keep operating costs under control.</p>
+  </div>
+</div>
+<div class="grid">
+  <div class="card">
+    <h2>Fuel Log</h2>
+    <form method="post" class="form-grid">
+      <input type="hidden" name="fuel" value="1" />
+      <label>
+        Vehicle
+        <select name="vehicle_id">
+          {% for vehicle in vehicles %}
+          <option value="{{ vehicle.id }}">
+            {{ vehicle.registration_number }}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Fuel Volume
+        <input
+          name="liters"
+          type="number"
+          step="0.01"
+          placeholder="Enter fuel liters"
+          required
+        />
+      </label>
+      <label>
+        Fuel Cost
+        <input
+          name="cost"
+          type="number"
+          step="0.01"
+          placeholder="Enter cost amount"
+          required
+        />
+      </label>
+      <label>
+        Purchase Date
+        <input name="date" type="date" required />
+      </label>
+      <button>Add Fuel</button>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Expense Log</h2>
+    <form method="post" class="form-grid">
+      <label>
+        Vehicle
+        <select name="vehicle_id">
+          {% for vehicle in vehicles %}
+          <option value="{{ vehicle.id }}">
+            {{ vehicle.registration_number }}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Expense Description
+        <input name="description" placeholder="Describe the expense" required />
+      </label>
+      <label>
+        Amount
+        <input
+          name="amount"
+          type="number"
+          step="0.01"
+          placeholder="Enter expense amount"
+          required
+        />
+      </label>
+      <label>
+        Expense Type
+        <input
+          name="kind"
+          placeholder="Enter expense type (e.g. repairs, toll)"
+          required
+        />
+      </label>
+      <label>
+        Expense Date
+        <input name="date" type="date" required />
+      </label>
+      <button>Add Expense</button>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <h2>Recent Fuel Logs</h2>
+  <table>
+    <tr>
+      <th>Vehicle</th>
+      <th>Liters</th>
+      <th>Cost</th>
+      <th>Date</th>
+    </tr>
+    {% for item in fuel_logs %}
+    <tr>
+      <td>{{ item.vehicle_id }}</td>
+      <td>{{ item.liters }}</td>
+      <td>{{ item.cost }}</td>
+      <td>{{ item.date }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2>Recent Expenses</h2>
+  <table>
+    <tr>
+      <th>Vehicle</th>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Date</th>
+    </tr>
+    {% for item in expenses %}
+    <tr>
+      <td>{{ item.vehicle_id }}</td>
+      <td>{{ item.description }}</td>
+      <td>{{ item.amount }}</td>
+      <td>{{ item.date }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

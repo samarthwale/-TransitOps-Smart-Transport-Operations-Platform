@@ -1,0 +1,99 @@
+{% extends 'base.html' %} {% block content %}
+<div class="page-header">
+  <div>
+    <h1>Settings & RBAC</h1>
+    <p>Manage user roles and access for the TransitOps platform.</p>
+  </div>
+</div>
+<div class="card">
+  <h2>User Access</h2>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Action</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.id }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role }}</td>
+      <td>
+        <form
+          method="post"
+          style="
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+          "
+        >
+          <input type="hidden" name="user_id" value="{{ user.id }}" />
+          <select name="role">
+            <option
+              value="Fleet Manager"
+              {%
+              if
+              user.role=""
+              ="Fleet Manager"
+              %}selected{%
+              endif
+              %}
+            >
+              Fleet Manager
+            </option>
+            <option
+              value="Driver"
+              {%
+              if
+              user.role=""
+              ="Driver"
+              %}selected{%
+              endif
+              %}
+            >
+              Driver
+            </option>
+            <option
+              value="Safety Officer"
+              {%
+              if
+              user.role=""
+              ="Safety Officer"
+              %}selected{%
+              endif
+              %}
+            >
+              Safety Officer
+            </option>
+            <option
+              value="Financial Analyst"
+              {%
+              if
+              user.role=""
+              ="Financial Analyst"
+              %}selected{%
+              endif
+              %}
+            >
+              Financial Analyst
+            </option>
+          </select>
+          <button>Save</button>
+        </form>
+        <form
+          method="post"
+          action="{{ url_for('delete_user', user_id=user.id) }}"
+          onsubmit="return confirm('Delete this user?');"
+        >
+          <button type="submit" style="background: #c0392b; color: white">
+            Delete
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

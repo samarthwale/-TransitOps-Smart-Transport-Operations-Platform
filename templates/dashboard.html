@@ -1,0 +1,156 @@
+{% extends 'base.html' %} {% block content %}
+<div class="page-header">
+  <div>
+    <h1>Dashboard</h1>
+    <p>
+      Fleet performance, recent activity, and analytics for smarter operations.
+    </p>
+  </div>
+  <div class="dashboard-actions">
+    <form id="dashboard-search" method="get" class="search-form">
+      <input
+        name="search"
+        placeholder="Search vehicles, drivers, trips..."
+        value="{{ search }}"
+      />
+    </form>
+    <span class="role-pill"
+      >{{ session.get('user', {}).get('role', 'Guest') }}</span
+    >
+  </div>
+</div>
+<div class="card dashboard-filters">
+  <form method="get" class="filter-grid">
+    <label>
+      Vehicle Type
+      <input
+        name="vehicle_type"
+        value="{{ vehicle_type_filter }}"
+        placeholder="All"
+      />
+    </label>
+    <label>
+      Status
+      <input name="status" value="{{ status_filter }}" placeholder="All" />
+    </label>
+    <label>
+      Region
+      <input name="region" value="{{ region_filter }}" placeholder="All" />
+    </label>
+    <button class="button">Apply Filters</button>
+  </form>
+</div>
+<div class="dashboard-grid">
+  <div class="summary-card">
+    <h3>Active Vehicles</h3>
+    <p>{{ active_vehicles }}</p>
+    <small>Vehicles currently in service</small>
+  </div>
+  <div class="summary-card">
+    <h3>Available Vehicles</h3>
+    <p>{{ available_vehicles }}</p>
+    <small>Ready for assignment</small>
+  </div>
+  <div class="summary-card">
+    <h3>In Maintenance</h3>
+    <p>{{ maintenance_vehicles }}</p>
+    <small>Under repair or inspection</small>
+  </div>
+  <div class="summary-card">
+    <h3>Active Trips</h3>
+    <p>{{ active_trips }}</p>
+    <small>Dispatched and underway</small>
+  </div>
+  <div class="summary-card">
+    <h3>Pending Trips</h3>
+    <p>{{ pending_trips }}</p>
+    <small>Awaiting assignment</small>
+  </div>
+  <div class="summary-card">
+    <h3>Drivers On Duty</h3>
+    <p>{{ drivers_on_duty }}</p>
+    <small>Currently operating vehicles</small>
+  </div>
+  <div class="summary-card">
+    <h3>Fleet Utilization</h3>
+    <p>{{ fleet_utilization }}%</p>
+    <small>Completed trips relative to active fleet</small>
+  </div>
+</div>
+<div class="grid dashboard-main">
+  <div class="card dashboard-panel">
+    <div class="panel-header">
+      <h2>Recent Trips</h2>
+      <span class="pill">Latest updates</span>
+    </div>
+    <table class="table-compact">
+      <tr>
+        <th>Trip</th>
+        <th>Vehicle</th>
+        <th>Driver</th>
+        <th>Status</th>
+        <th>ETA</th>
+      </tr>
+      {% for trip in trips[:4] %}
+      <tr>
+        <td>TR{{ '%03d'|format(trip.id) }}</td>
+        <td>{{ trip.vehicle_id }}</td>
+        <td>{{ trip.driver_id }}</td>
+        <td><span class="pill">{{ trip.status }}</span></td>
+        <td>
+          {% if trip.status == 'Dispatched' %}45 min{% else %}—{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="card dashboard-panel">
+    <div class="panel-header">
+      <h2>Vehicle Status</h2>
+      <span class="pill">Fleet distribution</span>
+    </div>
+    <div class="status-list">
+      <div class="status-row">
+        <span>Available</span>
+        <strong>{{ status_counts.Available }}</strong>
+        <div class="status-bar">
+          <div
+            class="status-fill available"
+            style="width: {{ (status_counts.Available / (status_counts.Available + status_counts['On Trip'] + status_counts['In Shop'] + status_counts.Retired or 1)) * 100 }}%"
+          ></div>
+        </div>
+      </div>
+      <div class="status-row">
+        <span>On Trip</span>
+        <strong>{{ status_counts['On Trip'] }}</strong>
+        <div class="status-bar">
+          <div
+            class="status-fill on-trip"
+            style="width: {{ (status_counts['On Trip'] / (status_counts.Available + status_counts['On Trip'] + status_counts['In Shop'] + status_counts.Retired or 1)) * 100 }}%"
+          ></div>
+        </div>
+      </div>
+      <div class="status-row">
+        <span>In Shop</span>
+        <strong>{{ status_counts['In Shop'] }}</strong>
+        <div class="status-bar">
+          <div
+            class="status-fill in-shop"
+            style="width: {{ (status_counts['In Shop'] / (status_counts.Available + status_counts['On Trip'] + status_counts['In Shop'] + status_counts.Retired or 1)) * 100 }}%"
+          ></div>
+        </div>
+      </div>
+      <div class="status-row">
+        <span>Retired</span>
+        <strong>{{ status_counts.Retired }}</strong>
+        <div class="status-bar">
+          <div
+            class="status-fill retired"
+            style="width: {{ (status_counts.Retired / (status_counts.Available + status_counts['On Trip'] + status_counts['In Shop'] + status_counts.Retired or 1)) * 100 }}%"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

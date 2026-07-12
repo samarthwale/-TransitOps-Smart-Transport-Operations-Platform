@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>TransitOps</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body class="{{ 'dark' if session.get('dark_mode') else '' }}">
+    <div class="layout">
+      <aside class="sidebar">
+        <button class="sidebar-close" onclick="toggleMenu()" type="button">
+          ✕ Close menu
+        </button>
+        <h1>TransitOps</h1>
+        <p>Smart Transport Operations Platform</p>
+        {% set role = session.get('user', {}).get('role', '') %}
+        <ul class="menu">
+          <li>
+            <a
+              href="/"
+              data-icon="🏠"
+              class="{% if request.path == '/' %}active{% endif %}"
+              >Dashboard</a
+            >
+          </li>
+          {% if role in ['Fleet Manager', 'Safety Officer'] %}
+          <li>
+            <a
+              href="/vehicles"
+              data-icon="🚚"
+              class="{% if request.path.startswith('/vehicles') %}active{% endif %}"
+              >Fleet</a
+            >
+          </li>
+          <li>
+            <a
+              href="/drivers"
+              data-icon="👷"
+              class="{% if request.path.startswith('/drivers') %}active{% endif %}"
+              >Drivers</a
+            >
+          </li>
+          {% endif %} {% if role in ['Fleet Manager', 'Safety Officer',
+          'Driver'] %}
+          <li>
+            <a
+              href="/trips"
+              data-icon="🛣️"
+              class="{% if request.path.startswith('/trips') %}active{% endif %}"
+              >Trips</a
+            >
+          </li>
+          {% endif %} {% if role in ['Fleet Manager', 'Safety Officer'] %}
+          <li>
+            <a
+              href="/maintenance"
+              data-icon="🛠️"
+              class="{% if request.path.startswith('/maintenance') %}active{% endif %}"
+              >Maintenance</a
+            >
+          </li>
+          {% endif %} {% if role in ['Fleet Manager', 'Financial Analyst'] %}
+          <li>
+            <a
+              href="/operations"
+              data-icon="⛽"
+              class="{% if request.path.startswith('/operations') %}active{% endif %}"
+              >Fuel & Expenses</a
+            >
+          </li>
+          {% endif %} {% if role in ['Fleet Manager', 'Safety Officer',
+          'Financial Analyst'] %}
+          <li>
+            <a
+              href="/reports"
+              data-icon="📊"
+              class="{% if request.path.startswith('/reports') %}active{% endif %}"
+              >Analytics</a
+            >
+          </li>
+          {% endif %} {% if role == 'Fleet Manager' %}
+          <li>
+            <a
+              href="/settings"
+              data-icon="⚙️"
+              class="{% if request.path.startswith('/settings') %}active{% endif %}"
+              >Settings</a
+            >
+          </li>
+          {% endif %} {% if role in ['Fleet Manager', 'Safety Officer',
+          'Financial Analyst', 'Driver'] %}
+          <li>
+            <a
+              href="/reminders"
+              data-icon="⏰"
+              class="{% if request.path.startswith('/reminders') %}active{% endif %}"
+              >Reminders</a
+            >
+          </li>
+          {% endif %} {% if role in ['Fleet Manager', 'Safety Officer'] %}
+          <li><a href="/export/vehicles" data-icon="⬇️">Export CSV</a></li>
+          {% endif %}
+          <li>
+            <a href="/toggle-theme" data-icon="🌓"
+              >{{ 'Light' if session.get('dark_mode') else 'Dark' }} Mode</a
+            >
+          </li>
+          <li><a href="/logout" data-icon="🚪">Logout</a></li>
+        </ul>
+        <div class="footer">
+          Role: {{ session.get('user', {}).get('role', 'Guest') }}
+        </div>
+      </aside>
+      <main class="content">
+        <button class="sidebar-toggle" onclick="toggleMenu()" type="button">
+          ☰ Menu
+        </button>
+        <div class="topbar">
+          <div>
+            <h2>
+              Welcome back, {{ session.get('user', {}).get('email', 'Guest') }}
+            </h2>
+            <span
+              >Manage your fleet more efficiently with fast navigation and
+              real-time insights.</span
+            >
+          </div>
+          <div class="user-badge">
+            <strong>{{ session.get('user', {}).get('role', 'Guest') }}</strong
+            ><span>Signed in</span>
+          </div>
+        </div>
+        {% with messages = get_flashed_messages() %} {% if messages %} {% for
+        message in messages %}
+        <div class="card flash">{{ message }}</div>
+        {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+      </main>
+    </div>
+    <script>
+      function toggleMenu() {
+        document.querySelector(".sidebar").classList.toggle("open");
+      }
+      window.addEventListener("click", function (event) {
+        if (
+          window.innerWidth <= 720 &&
+          !event.target.closest(".sidebar") &&
+          !event.target.closest(".sidebar-toggle")
+        ) {
+          document.querySelector(".sidebar").classList.remove("open");
+        }
+      });
+    </script>
+  </body>
+</html>

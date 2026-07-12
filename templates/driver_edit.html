@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Edit Driver</h1>
+    <p>Update driver profile, license details, safety score, and status.</p>
+  </div>
+</div>
+<div class="card">
+  <h2>Driver Details</h2>
+  <form method="post" class="form-grid">
+    <label>
+      Driver Name
+      <input name="name" value="{{ driver.name }}" required />
+    </label>
+    <label>
+      License Number
+      <input
+        name="license_number"
+        value="{{ driver.license_number }}"
+        required
+      />
+    </label>
+    <label>
+      License Category
+      <input
+        name="license_category"
+        value="{{ driver.license_category }}"
+        required
+      />
+    </label>
+    <label>
+      License Expiry Date
+      <input
+        name="license_expiry"
+        type="date"
+        value="{{ driver.license_expiry }}"
+        required
+      />
+    </label>
+    <label>
+      Contact Number
+      <input
+        name="contact_number"
+        value="{{ driver.contact_number }}"
+        required
+      />
+    </label>
+    <label>
+      Safety Score
+      <input
+        name="safety_score"
+        type="number"
+        step="0.01"
+        value="{{ driver.safety_score }}"
+        required
+      />
+    </label>
+    <label>
+      Status
+      <select name="status">
+        <option value="Available"{% if driver.status == 'Available' %} selected{% endif %}>
+          Available
+        </option>
+        <option value="On Trip"{% if driver.status == 'On Trip' %} selected{% endif %}>
+          On Trip
+        </option>
+        <option value="Off Duty"{% if driver.status == 'Off Duty' %} selected{% endif %}>
+          Off Duty
+        </option>
+        <option value="Suspended"{% if driver.status == 'Suspended' %} selected{% endif %}>
+          Suspended
+        </option>
+      </select>
+    </label>
+    <button>Save Changes</button>
+  </form>
+</div>
+{% endblock %}

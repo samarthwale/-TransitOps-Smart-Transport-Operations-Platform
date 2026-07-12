@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>TransitOps Signup</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="auth-screen">
+      <div class="hero-card auth-card">
+        <h1>Create your TransitOps account</h1>
+        <p>
+          Register and start managing vehicles, drivers, trips, maintenance, and
+          expenses in one platform.
+        </p>
+      </div>
+      <div class="card auth-card">
+        <h2>Sign up</h2>
+        {% with messages = get_flashed_messages() %} {% if messages %}
+        <div class="flash-card">
+          {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+        <form method="post" class="form-grid">
+          <label>
+            Full Name
+            <input name="name" placeholder="Enter your full name" required />
+          </label>
+          <label>
+            Email Address
+            <input
+              name="email"
+              type="email"
+              placeholder="Enter your email address"
+              required
+            />
+          </label>
+          <label>
+            Password
+            <input
+              name="password"
+              type="password"
+              placeholder="Create a password"
+              required
+            />
+          </label>
+          <label>
+            Role
+            <select name="role">
+              <option>Fleet Manager</option>
+              <option>Driver</option>
+              <option>Safety Officer</option>
+              <option>Financial Analyst</option>
+            </select>
+          </label>
+          <button>Create account</button>
+        </form>
+        <p class="small-note">
+          Already have an account? <a href="/login">Sign in</a>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

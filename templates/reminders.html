@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="page-header">
+    <div>
+      <h1>Compliance Reminders</h1>
+      <p>Monitor drivers with license expiry dates approaching or already passed.</p>
+    </div>
+  </div>
+  <div class="card"><h2>Driver License Alerts</h2>
+    <p>These drivers require attention based on their license expiry dates.</p>
+    <table><tr><th>Name</th><th>License</th><th>Expiry</th><th>Status</th></tr>{% for driver in drivers %}
+      <tr><td>{{ driver.name }}</td><td>{{ driver.license_number }}</td><td>{{ driver.license_expiry }}</td><td><span class="status-pill status-{{ driver.status|replace(' ', '-') }}">{{ driver.status }}</span></td></tr>{% endfor %}</table>
+  </div>
+{% endblock %}
