@@ -137,3 +137,26 @@ Displays:
 - Settings
 - Not Found (404)
 
+TransitOps
+│
+├── app.py
+├── transitops.db
+├── requirements.txt
+│
+├── static
+│      style.css
+│      dashboard.js
+│
+├── templates
+│      login.html
+│      dashboard.html
+│      vehicles.html
+│      add_vehicle.html
+│      drivers.html
+│      add_driver.html
+│      trips.html
+│      maintenance.html
+│      fuel.html
+│      reports.html
+│
+└── tests
